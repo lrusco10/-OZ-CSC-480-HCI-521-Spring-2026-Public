@@ -1,7 +1,7 @@
 name: Deploy
 on:
     push:
-        branches: [main]
+        branches: [main, feat/setup_github_workflows]
     workflow_dispatch:
 
 
