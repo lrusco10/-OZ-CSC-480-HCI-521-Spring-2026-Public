@@ -1,0 +1,23 @@
+name: Deploy to Moxie Server
+on:
+    push:
+        branches: [feat/setup_github_workflows] # TODO: remove on.push when merging to main branch
+    workflow_dispatch:
+        inputs:
+            version:
+                description: "Version to deploy (e.g. v1.2.3)"
+                required: true
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Deploy to server
+              uses: appleboy/ssh-action@v1
+              with:
+                  host: ${{ secrets.MOXIE_DEPLOY_HOST_CSC480 }}
+                  username: ${{ secrets.MOXIE_DEPLOY_USERNAME_CSC480 }}
+                  key: ${{ secrets.MOXIE_DEPLOY_KEY_CSC480 }}
+                  script: |
+                      echo "Example Text Message: ${{ inputs.version }} at $(date)" > ~/CSC480/hello.txt
+                      cat ~/CSC480/hello.txt
