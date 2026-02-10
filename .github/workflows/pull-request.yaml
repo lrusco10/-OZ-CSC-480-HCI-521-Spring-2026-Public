@@ -1,0 +1,12 @@
+name: Pull Request Main
+
+on:
+    pull_request:
+        branches: [main]
+
+jobs:
+    check:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+            - run: echo "Check lint and compile checks"
