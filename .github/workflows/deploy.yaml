@@ -1,5 +1,7 @@
 name: Deploy to Moxie Server
 on:
+    push:
+        branches: [feat/setup_github_workflows] 
     workflow_dispatch:
         inputs:
             version:
