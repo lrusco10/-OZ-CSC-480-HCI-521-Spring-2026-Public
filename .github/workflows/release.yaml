@@ -1,0 +1,76 @@
+name: Create Release
+on:
+    workflow_dispatch:
+        inputs:
+            version:
+                description: "Version tag (e.g. v1.2.3)"
+                required: true
+
+env:
+    REGISTRY: ghcr.io
+    IMAGE_NAME: ${{ github.repository }}
+    VERSION: ${{ inputs.version || 'v0.0.0' }}
+
+jobs:
+    build_frontend:
+        name: build_frontend
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+        steps:
+            - uses: actions/checkout@v6
+            - name: Log in to GHCR
+              uses: docker/login-action@v3
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+            - name: Set lowercase image name
+              id: image 
+              run: echo "name=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]' | sed 's/\/-oz-/\/oz-/')" >> $GITHUB_OUTPUT
+            - name: Build and push Frontend
+              uses: docker/build-push-action@v5
+              with:
+                  context: ./frontend
+                  push: true
+                  tags: |
+                    ${{ env.REGISTRY }}/${{ steps.image.outputs.name }}/frontend:${{ env.VERSION }}
+                    ${{ env.REGISTRY }}/${{ steps.image.outputs.name }}/frontend:latest
+    build_backend-finish:
+        name: build_backend_finish
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+        steps:
+            - uses: actions/checkout@v6
+            - name: Log in to GHCR
+              uses: docker/login-action@v3
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+            - name: Set lowercase image name
+              id: image
+              run: echo "name=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]' | sed 's/\/-oz-/\/oz-/')" >> $GITHUB_OUTPUT
+            - name: Build and push Backend
+              uses: docker/build-push-action@v5
+              with:
+                  context: ./backend/finish
+                  push: true
+                  tags: |
+                    ${{ env.REGISTRY }}/${{ steps.image.outputs.name }}/backend-finish:${{ env.VERSION }}
+                    ${{ env.REGISTRY }}/${{ steps.image.outputs.name }}/backend-finish:latest
+    create_release:
+        name: create_release
+        needs: [build_frontend, build_backend-finish]
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        steps:
+            - uses: actions/checkout@v6
+            - uses: softprops/action-gh-release@v2
+              with:
+                  tag_name: ${{ env.VERSION }}
+                  generate_release_notes: true
