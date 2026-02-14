@@ -1,6 +1,8 @@
-# syntax=docker.io/docker/dockerfile:1
-
 FROM node:24-alpine AS base
+
+LABEL org.opencontainers.image.source=https://github.com/Paul-Austin-Oswego-CSC480-HCI521/-OZ-CSC-480-HCI-521-Spring-2026-Public
+LABEL org.opencontainers.image.description="Frontend application for OZ CSC 480"
+
 WORKDIR /app
 
 FROM base AS deps
