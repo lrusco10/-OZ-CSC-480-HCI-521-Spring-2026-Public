@@ -13,6 +13,8 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v6
+            - name: List files (debug)
+              run: ls -la
             
             - name: Copy docker-compose to server
               uses: appleboy/scp-action@v0.1.7
