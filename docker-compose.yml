@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      target: production
+    image: frontend-csc480-prod-image:latest # TODO: add ghcr for image
+    container_name: frontend-csc480-prod-container
+    ports:
+      - "7000:3000"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./logs/frontend:/var/log/frontend
+    restart: unless-stopped
+
+  backend-finish:
+    build:
+      context: ./backend/finish
+      target: production
+    image: backend-finish-csc480-prod-image:latest # TODO: add ghcr for image
+    container_name: backend-finish-csc480-prod-container
+    ports:
+      - "7001:9080"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./logs/backend:/logs
+    restart: unless-stopped
