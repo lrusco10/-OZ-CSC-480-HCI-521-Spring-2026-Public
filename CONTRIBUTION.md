@@ -15,8 +15,8 @@
 
 3. Run the project:
    ```bash
-   make dev-frontend   # frontend only
-   make dev-backend    # backend only
+   make dev-frontend   # frontend only (localhost:3000)
+   make dev-backend    # backend only (localhost:9080)
    make dev            # both
    ```
 
