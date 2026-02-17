@@ -16,3 +16,9 @@ setup-frontend:
 
 setup-backend:
 	cd ./backend/finish && ./mvnw clean install
+
+checkout-latest:
+	git fetch --tags && git checkout $(shell git describe --tags --abbrev=0)
+
+checkout:
+	git fetch --tags && git checkout $(version)
