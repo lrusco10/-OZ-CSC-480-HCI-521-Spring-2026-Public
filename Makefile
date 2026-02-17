@@ -7,7 +7,7 @@ dev-frontend:
 	cd ./frontend && npm run dev
 
 dev-backend:
-	./backend/finish/mvnw liberty:dev
+	cd ./backend/finish && ./mvnw liberty:dev
 
 setup: setup-frontend setup-backend
 
