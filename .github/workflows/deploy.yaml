@@ -14,15 +14,6 @@ jobs:
         steps:
             - uses: actions/checkout@v6
             
-            - name: Copy docker-compose to server
-              uses: appleboy/scp-action@v0.1.7
-              with:
-                  host: ${{ secrets.MOXIE_DEPLOY_HOST_CSC480 }}
-                  username: ${{ secrets.MOXIE_DEPLOY_USERNAME_CSC480 }}
-                  key: ${{ secrets.MOXIE_DEPLOY_KEY_CSC480 }}
-                  source: "docker-compose.yml"
-                  target: "~/CSC480/production/"
-                  
             - name: Deploy to server
               uses: appleboy/ssh-action@v1
               with:
@@ -30,7 +21,12 @@ jobs:
                   username: ${{ secrets.MOXIE_DEPLOY_USERNAME_CSC480 }}
                   key: ${{ secrets.MOXIE_DEPLOY_KEY_CSC480 }}
                   script: |
+                      mkdir -p ~/CSC480/production/
                       cd ~/CSC480/production/
-                      docker pull ghcr.io/paul-austin-oswego-csc480-hci521/oz-csc-480-hci-521-spring-2026-public/frontend:${{ env.VERSION }}
-                      docker pull ghcr.io/paul-austin-oswego-csc480-hci521/oz-csc-480-hci-521-spring-2026-public/backend-finish:${{ env.VERSION }}
-                      docker-compose up -d
+                     
+                      curl -fsSL https://raw.githubusercontent.com/Paul-Austin-Oswego-CSC480-HCI521/-OZ-CSC-480-HCI-521-Spring-2026-Public/main/docker-compose.yml -o docker-compose.yml
+
+                      VERSION=${{ env.VERSION }} docker-compose pull
+                      docker-compose down
+                      VERSION=${{ env.VERSION }} docker-compose up -d
+                      docker-compose ps
