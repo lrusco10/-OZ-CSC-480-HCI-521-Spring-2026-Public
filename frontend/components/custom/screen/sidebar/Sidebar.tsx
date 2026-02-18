@@ -41,7 +41,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent className="m-5 mt-15">
         {/* group1 for header */}
-        <SidebarGroup className="m-3 mt-8 text-2xl">
+        <SidebarGroup className="m-3 mt-10 text-xl">
           HCI 521/CSC480
         </SidebarGroup>
 
