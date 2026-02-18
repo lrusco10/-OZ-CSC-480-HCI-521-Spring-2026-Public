@@ -39,7 +39,7 @@ const items = [
 export function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarContent className="m-3">
+      <SidebarContent className="m-5 mt-15">
         {/* group1 for header */}
         <SidebarGroup className="m-3 mt-8 text-2xl">HCI 521/CSC480</SidebarGroup>
 
