@@ -20,18 +20,18 @@ const items = [
   },
   {
     title: "Notifications",
-    url: "/",
+    url: "/notifications",
     icon: Inbox,
   },
 
   {
     title: "WorkLogs",
-    url: "/",
+    url: "/worklogs",
     icon: Search,
   },
   {
     title: "TaskTrackers",
-    url: "/",
+    url: "/tasktrackers",
     icon: Settings,
   },
 ];
