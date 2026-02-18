@@ -1,5 +1,13 @@
 # Contributing to the Project
 
+## Prerequisites
+
+Make sure you have the following installed before getting started:
+
+- [Git](https://git-scm.com/)
+- [Node.js / npm](https://nodejs.org/)
+- [Java 21+](https://adoptium.net/)
+
 ## Setting Up the Project
 
 1. Clone the repository and navigate into it:
