@@ -52,6 +52,7 @@ Then follow the [Setting Up the Project](#setting-up-the-project) steps to run l
 
 From the `backend/finish` directory:
 ```bash
+cd ./backend/finish
 ./mvnw test      # unit tests only
 ./mvnw verify    # unit + integration tests
 ```
