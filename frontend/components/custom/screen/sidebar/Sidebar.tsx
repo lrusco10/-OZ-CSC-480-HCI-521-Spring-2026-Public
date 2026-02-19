@@ -1,5 +1,5 @@
 "use client";
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import { Calendar, Home, Inbox, Search, Settings, BellIcon, Workflow, ListTodo } from "lucide-react";
 
 import {
   Sidebar,
@@ -21,18 +21,18 @@ const items = [
   {
     title: "Notifications",
     url: "/notifications",
-    icon: Inbox,
+    icon: BellIcon,
   },
 
   {
     title: "WorkLogs",
     url: "/worklogs",
-    icon: Search,
+    icon: Workflow,
   },
   {
     title: "TaskTrackers",
     url: "/tasktrackers",
-    icon: Settings,
+    icon: ListTodo,
   },
 ];
 
