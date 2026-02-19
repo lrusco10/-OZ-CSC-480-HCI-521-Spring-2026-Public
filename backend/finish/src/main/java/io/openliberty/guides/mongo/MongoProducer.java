@@ -9,7 +9,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 // end::copyright[]
-package mongo;
+package io.openliberty.guides.mongo;
 
 import java.util.Collections;
 

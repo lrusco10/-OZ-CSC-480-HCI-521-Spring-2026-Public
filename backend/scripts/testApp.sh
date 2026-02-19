@@ -1,63 +1,53 @@
 #!/bin/bash
 set -euxo pipefail
-
 ./mvnw -version
 
-# TEST 1:  Running the application in a Docker container
-./mvnw -ntp -q clean package
+##############################################################################
+##
+##  GH actions CI test script
+##
+##############################################################################
 
-docker pull -q icr.io/appcafe/open-liberty:kernel-slim-java11-openj9-ubi
+cd ..
 
-docker build -t openliberty-getting-started:1.0-SNAPSHOT .
+# Build mongo docker image and run it
+docker build -t mongo-sample -f assets/Dockerfile .
+docker run --name mongo-guide -p 27017:27017 -d mongo-sample
 
-docker run -d --name gettingstarted-app -p 9080:9080 openliberty-getting-started:1.0-SNAPSHOT
+## Wait for mongo to be ready
+sleep 10
 
-sleep 60
+# copy truststore from container to host
+docker cp mongo-guide:/home/mongodb/certs/truststore.p12 start/src/main/liberty/config/resources/security
+docker cp mongo-guide:/home/mongodb/certs/truststore.p12 finish/src/main/liberty/config/resources/security
 
-docker exec gettingstarted-app cat /logs/messages.log | grep product
-docker exec gettingstarted-app cat /logs/messages.log | grep java
+## Move back to the finish folder
+cd finish
 
-status="$(curl --write-out "%{http_code}\n" --silent --output /dev/null "http://localhost:9080/dev/system/properties")" 
-if [ "$status" == "200" ]
-then 
-  echo ENDPOINT OK
-else 
-  echo "$status" 
-  echo ENDPOINT NOT OK
-  exit 1
-fi
+# LMP 3.0+ goals are listed here: https://github.com/OpenLiberty/ci.maven#goals
 
-docker stop gettingstarted-app && docker rm gettingstarted-app
-
-# TEST 2: Building and running the application
+## Rebuild the application
+#       package                   - Take the compiled code and package it in its distributable format.
+#       liberty:create            - Create a Liberty server.
+#       liberty:install-feature   - Install a feature packaged as a Subsystem Archive (esa) to the Liberty runtime.
+#       liberty:deploy            - Copy applications to the Liberty server's dropins or apps directory. 
 ./mvnw -ntp -Dhttp.keepAlive=false \
     -Dmaven.wagon.http.pool=false \
     -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
     -q clean package liberty:create liberty:install-feature liberty:deploy
+
+## Run the tests
+# These commands are separated because if one of the commands fail, the test script will fail and exit. 
+# e.g if liberty:start fails, then there is no need to run the failsafe commands. 
+#       liberty:start             - Start a Liberty server in the background.
+#       failsafe:integration-test - Runs the integration tests of an application.
+#       liberty:stop              - Stop a Liberty server.
+#       failsafe:verify           - Verifies that the integration tests of an application passed.
 ./mvnw -ntp liberty:start
-./mvnw -ntp -Dhttp.keepAlive=false \
-    -Dmaven.wagon.http.pool=false \
-    -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
-    -Dcontext.root=/dev/ failsafe:integration-test liberty:stop
+./mvnw -ntp failsafe:integration-test liberty:stop
 ./mvnw -ntp failsafe:verify
 
-# TEST 3: packaging and running the application jar
-./mvnw -ntp liberty:package -Dinclude=runnable
-if [ ! -f "target/guide-getting-started.jar" ]; then
-    echo "target/guide-getting-started.jar was not generated!"
-    exit 1
-fi
-java -jar target/guide-getting-started.jar &
-GGS_PID=$!
-echo "GGS_PID=$GGS_PID"
-sleep 60
-status="$(curl --write-out "%{http_code}\n" --silent --output /dev/null "http://localhost:9080/dev/system/properties")"
-kill $GGS_PID
-if [ "$status" == "200" ]
-then
-  echo ENDPOINT OK
-else
-  echo "$status"
-  echo ENDPOINT NOT OK
-  exit 1
-fi
+# Tear down
+docker stop mongo-guide
+docker rm mongo-guide
+docker rmi mongo-sample
