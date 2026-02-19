@@ -3,10 +3,13 @@
     <featureManager>
         <platform>jakartaee-10.0</platform>
         <platform>microprofile-7.1</platform>
-        <feature>restfulWS</feature>
+        <feature>beanValidation-3.0</feature>
+        <feature>jaxrs</feature>
+        <feature>mpOpenAPI</feature>
         <feature>jsonp</feature>
         <feature>jsonb</feature>
         <feature>cdi</feature>
+        <feature>ssl-1.0</feature>
     </featureManager>
     <!-- end::features[] -->
 
@@ -15,7 +18,10 @@
 
     <!-- tag::webApplication[] -->
     <webApplication location="notifier.war" contextRoot="/" />
-    <!-- end::webApplication[] -->    
+    <ssl id="outboundSSLContext"
+        keyStoreRef="defaultKeyStore"
+        trustStoreRef="outboundTrustStore"
+        sslProtocol="TLS"/>
 
 
     <httpEndpoint host="*" httpPort="${http.port}"
