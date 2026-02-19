@@ -160,6 +160,18 @@ When opening a pull request, include a concise description of the feature or fix
 
 ---
 
+## Troubleshooting Tips
+   > Feel free to update this if you have troubleshooting tips
+
+1. **Port 9080(or)3000 already in use / updates are not reflected**
+   
+   A previous Liberty process may still be running in the background. Kill it:
+```bash
+   kill -9 $(lsof -t -i :9080)
+   kill -9 $(lsof -t -i :3000)
+```
+
+
 ## Notes for Developers
 
 - The `Makefile` is a convenience tool. Feel free to run the commands inside it manually or add new targets that benefit the team.
