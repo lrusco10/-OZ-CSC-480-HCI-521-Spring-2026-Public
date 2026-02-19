@@ -131,6 +131,12 @@ cd ./backend/finish
 **Integration tests** are named `*IT.java`.
 
 ---
+## Backend
+
+Check out the OpenAPI UI to explore and test the backend endpoints:
+http://localhost:9080/openapi/ui/
+
+---
 
 ## Issues and Pull Requests
 
